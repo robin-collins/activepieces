@@ -8,7 +8,7 @@ import {
   tap,
 } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { ActionType, FlowVersion } from '@activepieces/shared';
+import { FlowVersion } from '@activepieces/shared';
 import {
   BuilderSelectors,
   Step,
@@ -22,20 +22,22 @@ import { PieceMetadataService } from '@activepieces/ui/feature-pieces';
 @Component({
   selector: 'app-edit-step-sidebar',
   templateUrl: './edit-step-sidebar.component.html',
-  styleUrls: ['./edit-step-sidebar.component.css'],
+  styleUrls: [],
 })
 export class EditStepSidebarComponent implements OnInit {
+  displayNameChanged$: BehaviorSubject<string> = new BehaviorSubject('Step');
+  selectedStepAndFlowId$?: Observable<{
+    step: Step | null | undefined;
+    version: FlowVersion;
+  }>;
+  selectedFlowItemDetails$: Observable<FlowItemDetails | undefined> =
+    of(undefined);
   constructor(
     private store: Store,
     private cd: ChangeDetectorRef,
     private pieceService: PieceMetadataService
   ) {}
-  displayNameChanged$: BehaviorSubject<string> = new BehaviorSubject('Step');
-  selectedStepAndFlowId$: Observable<{
-    step: Step | null | undefined;
-    version: FlowVersion;
-  }>;
-  selectedFlowItemDetails$: Observable<FlowItemDetails | undefined>;
+
   ngOnInit(): void {
     //in case you switch piece while the edit piece panel is opened
     this.selectedStepAndFlowId$ = combineLatest({
@@ -70,8 +72,5 @@ export class EditStepSidebarComponent implements OnInit {
         deselectCurrentStep: true,
       })
     );
-  }
-  get ActionType() {
-    return ActionType;
   }
 }

@@ -5,6 +5,7 @@
 @import "./assets/scss/css-reset.scss";
 @import "./assets/scss/ng-material-override.scss";
 @import "./assets/scss/spinner.scss";
+@import "./assets/scss/scroll.scss";
 @import "./assets/scss/utlis.scss";
 @import "prismjs/plugins/line-numbers/prism-line-numbers.css";
 @import "./assets/scss/code-editors-override.scss";
@@ -21,15 +22,12 @@
     --white: #{$white};
     --gray-card: #{$gray-card};
     --placeholder: #{$placeholder};
-    --form-label: #{$form-label};
     --black: #{$black};
     --disable: #{$disable};
-    --sidebar: #{$sidebar};
     --hover: #{$hover};
     --avatar: #{$avatar};
     --blue-link: #{$blue-link};
     --gray-select: #{$gray-select};
-    --add-piece: #{$add-piece};
     --outline: #{$outline};
     --description: #{$description};
     --bleached-gray: #{$bleached-gray};

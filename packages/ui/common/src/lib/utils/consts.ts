@@ -5,7 +5,18 @@ import {
 } from '@activepieces/shared';
 import { AuthenticationService, FlagService } from '../service';
 import { forkJoin, map, take } from 'rxjs';
-
+export type FeatureKey =
+  | 'PROJECTS'
+  | 'BRANDING'
+  | 'PIECES'
+  | 'TEMPLATES'
+  | 'API'
+  | 'SSO'
+  | 'AUDIT_LOGS'
+  | 'GIT_SYNC'
+  | 'ISSUES'
+  | 'ALERTS'
+  | 'ENTERPRISE_PIECES';
 export const unexpectedErrorMessage = $localize`An unexpected error occurred, please contact support`;
 export const codeGeneratorTooltip = $localize`Write code with assistance from AI`;
 export const disabledCodeGeneratorTooltip = $localize`Configure api key in the environment variables to generate code using AI`;
@@ -26,8 +37,6 @@ export const flowActionsUiInfo = {
   delete: {
     text: $localize`Delete`,
     icon: 'assets/img/custom/trash.svg',
-    note: $localize`This will permanently delete the flow, all its data and any background runs.
-    You can't undo this action.`,
   },
   rename: {
     text: $localize`Rename`,
@@ -48,14 +57,21 @@ export const flowActionsUiInfo = {
   iconSizeTailWind: 'ap-w-[20px] ap-h-[20px]',
 };
 
-export const downloadJson = (obj: any, fileName: string) => {
+export const flowDeleteNoteWithGit = $localize`This will permanently delete the flow, all its data and any background runs.
+You can't undo this action including git branch.`;
+export const flowDeleteNote = $localize`This will permanently delete the flow, all its data and any background runs.`;
+export const downloadFile = (
+  obj: any,
+  fileName: string,
+  extension: 'txt' | 'json'
+) => {
   const blob = new Blob([obj], {
     type: 'application/json',
   });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = `${fileName}.json`;
+  link.download = `${fileName}.${extension}`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -63,7 +79,7 @@ export const downloadJson = (obj: any, fileName: string) => {
 };
 
 export const downloadFlow = (flow: FlowTemplate) => {
-  downloadJson(JSON.stringify(flow, null, 2), flow.name);
+  downloadFile(JSON.stringify(flow, null, 2), flow.name, 'json');
 };
 
 export const jsonEditorOptionsMonaco = {
@@ -78,14 +94,7 @@ export const EMPTY_SPACE_BETWEEN_INPUTS_IN_PIECE_PROPERTIES_FORM = 24 + 'px';
 export const BOTTOM_MARGIN_FOR_DESCRIPTION_IN_PIECE_PROPERTIES_FORM = 18 + 'px';
 
 export const findHomePageRouteForRole = (role: ProjectMemberRole) => {
-  switch (role) {
-    case ProjectMemberRole.ADMIN:
-    case ProjectMemberRole.EDITOR:
-    case ProjectMemberRole.VIEWER:
-      return '/flows';
-    case ProjectMemberRole.EXTERNAL_CUSTOMER:
-      return '/activity';
-  }
+  return '/flows';
 };
 
 export const showPlatformDashboard$ = (
@@ -101,12 +110,14 @@ export const showPlatformDashboard$ = (
     showPlatformDemo,
   }).pipe(
     map(
-      ({ platformAdmin, showPlatformDemo }) =>
-        (showPlatformDemo || platformAdmin) &&
-        authenticationService.currentUser.projectRole !==
-          ProjectMemberRole.EXTERNAL_CUSTOMER
+      ({ platformAdmin, showPlatformDemo }) => showPlatformDemo || platformAdmin
     )
   );
 };
 /**Three colors that fits with our design system to use as backgrounds */
 export const experimentalColors = ['#f5dc83', '#ed9090', '#90edb5'];
+export const executionsPageFragments = {
+  Runs: 'Runs',
+  Issues: 'Issues',
+};
+export const TEN_SECONDS = 10000;

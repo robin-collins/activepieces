@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { UserLoggedIn, showBasedOnEditionGuard } from '@activepieces/ui/common';
+import {
+  UserLoggedInGuard,
+  showBasedOnEditionGuard,
+} from '@activepieces/ui/common';
 import { ImportFlowUriEncodedResolver } from './modules/import-flow-uri-encoded/import-flow-uri-encoded.resolver';
 import { ImportFlowUriEncodedComponent } from './modules/import-flow-uri-encoded/import-flow-uri-encoded.component';
 import { ImportFlowComponent } from './modules/import-flow/import-flow.component';
@@ -16,11 +19,21 @@ import { FormsComponent } from './modules/forms/forms.component';
 export const routes: Routes = [
   {
     path: 'import-flow-uri-encoded',
-    canActivate: [UserLoggedIn, showBasedOnEditionGuard([ApEdition.CLOUD])],
+    canActivate: [
+      UserLoggedInGuard,
+      showBasedOnEditionGuard([ApEdition.CLOUD]),
+    ],
     resolve: {
       combination: ImportFlowUriEncodedResolver,
     },
     component: ImportFlowUriEncodedComponent,
+  },
+  {
+    path: 'invitation',
+    loadComponent: () =>
+      import('./modules/accept-invitation/accept-invitation.component').then(
+        (m) => m.AcceptInvitationComponent
+      ),
   },
   {
     path: 'templates/:templateId',
@@ -48,11 +61,11 @@ export const routes: Routes = [
     component: EmbeddedConnectionDialogComponent,
     canActivate: [
       showBasedOnEditionGuard([ApEdition.ENTERPRISE, ApEdition.CLOUD]),
-      UserLoggedIn,
+      UserLoggedInGuard,
     ],
   },
   {
-    canActivate: [UserLoggedIn],
+    canActivate: [UserLoggedInGuard],
     path: '',
     loadChildren: () =>
       import('@activepieces/ui/feature-dashboard').then(
@@ -60,7 +73,7 @@ export const routes: Routes = [
       ),
   },
   {
-    canActivate: [UserLoggedIn],
+    canActivate: [UserLoggedInGuard],
     path: '',
     loadChildren: () =>
       import('ui-feature-flow-builder').then(
@@ -81,11 +94,13 @@ export const routes: Routes = [
     component: FormsComponent,
   },
   {
+    path: 'not-found',
+    component: NotFoundComponent,
+  },
+
+  {
     path: '**',
     component: NotFoundComponent,
-    data: {
-      title: '404',
-    },
   },
 ];
 

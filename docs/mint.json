@@ -14,14 +14,11 @@
       "dark": "#121212"
     }
   },
-  "openapi": [
-    "/openapi.json"
-  ],
+  "openapi": ["/openapi.json"],
   "metadata": {
     "description": "Open source no-code business automation· Zapier open source alternative"
   },
   "topbarCtaButton": {
-    "type": "link",
     "name": "Get Started",
     "url": "https://www.activepieces.com/plans"
   },
@@ -46,7 +43,11 @@
       "url": "developers",
       "icon": "code"
     },
-    
+    {
+      "name": "Pieces",
+      "icon": "plug",
+      "url": "https://www.activepieces.com/pieces"
+    },
     {
       "name": "API",
       "url": "endpoints",
@@ -56,31 +57,16 @@
       "name": "Discord",
       "icon": "discord",
       "url": "https://discord.gg/2jUXBKDdP8"
-    },
-    {
-      "name": "Pieces",
-      "icon": "plug",
-      "url": "https://www.activepieces.com/pieces"
-    },
-    {
-      "name": "Handbook",
-      "icon": "book",
-      "url": "handbook"
     }
   ],
   "navigation": [
     {
       "group": "Getting Started",
-      "pages": [
-        "getting-started/introduction",
-        "getting-started/principles"
-      ]
+      "pages": ["getting-started/introduction", "getting-started/principles"]
     },
     {
       "group": "Get Started",
-      "pages": [
-        "endpoints/overview"
-      ]
+      "pages": ["endpoints/overview"]
     },
     {
       "group": "Endpoints",
@@ -93,6 +79,16 @@
             "endpoints/projects/create",
             "endpoints/projects/update",
             "endpoints/projects/list"
+          ]
+        },
+        {
+          "group": "User Invitations",
+          "icon": "paper-plane",
+          "pages": [
+            "endpoints/user-invitations/schema",
+            "endpoints/user-invitations/create",
+            "endpoints/user-invitations/list",
+            "endpoints/user-invitations/delete"
           ]
         },
         {
@@ -139,18 +135,12 @@
         {
           "group": "Pieces",
           "icon": "plug",
-          "pages": [
-            "endpoints/pieces/schema",
-            "endpoints/pieces/install"
-          ]
+          "pages": ["endpoints/pieces/schema", "endpoints/pieces/install"]
         },
         {
           "group": "Git Sync",
           "icon": "git",
-          "pages": [
-            "endpoints/git-repos/schema",
-            "endpoints/git-repos/pull"
-          ]
+          "pages": ["endpoints/git-repos/schema", "endpoints/git-repos/pull"]
         }
       ]
     },
@@ -166,7 +156,7 @@
     {
       "group": "Get Started",
       "pages": [
-        "install/options/overview",
+        "install/overview",
         "install/options/docker",
         "install/options/docker-compose",
         "install/options/easypanel",
@@ -182,7 +172,6 @@
           "icon": "gear",
           "pages": [
             "install/configurations/environment-variables",
-            "install/configurations/error-notifications",
             "install/configurations/setup-app-webhooks"
           ]
         },
@@ -194,9 +183,7 @@
     },
     {
       "group": "Getting Started",
-      "pages": [
-        "developers/overview"
-      ]
+      "pages": ["developers/overview"]
     },
     {
       "group": "Build a Piece",
@@ -256,6 +243,8 @@
     {
       "group": "Misc",
       "pages": [
+        "developers/misc/pieces-ci-cd",
+        "developers/misc/scale-pieces",
         "developers/misc/repo-structure",
         "developers/misc/private-fork"
       ]
@@ -286,58 +275,22 @@
       ]
     },
     {
-      "group": "Team",
-      "pages": [
-        "team/overview"
-      ]
-    },
-    {
       "group": "Operations",
-      "pages": [
-        "operations/git-sync",
-        "operations/audit-logs"
-      ]
+      "pages": ["operations/git-sync", "operations/audit-logs"]
     },
     {
       "group": "Security",
-      "pages": [
-        "security/practices",
-        "security/permissions",
-        "security/sso"
-      ]
+      "pages": ["security/practices", "security/permissions", "security/sso"]
     },
     {
       "group": "About",
       "pages": [
         "about/i18n",
         "about/editions",
+        "about/breaking-changes",
         "about/changelog",
         "about/telemetry",
         "about/license"
-      ]
-    },
-    {
-      "group": "Handbook",
-      "pages": [
-        "handbook/overview",
-        "handbook/values",
-        {
-          "group": "Engineering",
-          "icon": "code",
-          "pages": [
-            "handbook/engineering/team",
-            "handbook/engineering/how-we-work",
-            "handbook/engineering/stack",
-            "handbook/engineering/hiring"
-          ]
-        },
-        {
-          "group": "People",
-          "icon": "users",
-          "pages": [
-            "handbook/people/time"
-          ]
-        }
       ]
     }
   ],
@@ -373,8 +326,8 @@
       "destination": "/embedding/configuration/generate-jwt"
     },
     {
-      "source":"/embedding/embed-builder/embed-iframe",
-      "destination":"/embedding/configuration/initialize-embed"
+      "source": "/embedding/embed-builder/embed-iframe",
+      "destination": "/embedding/configuration/initialize-embed"
     }
   ]
 }

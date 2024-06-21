@@ -1,17 +1,11 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { JsonViewDialogComponent } from './json-view-dialog/json-view-dialog.component';
 import { copyText } from '../../utils/tables.utils';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { downloadJson, jsonEditorOptionsMonaco } from '../../utils/consts';
+import { downloadFile } from '../../utils/consts';
 import { FormControl } from '@angular/forms';
-import { outputLog } from '../../pipe/output-log.pipe';
-import { Observable } from 'rxjs';
+import { JsonEditorOptions } from 'ang-jsoneditor';
 
 @Component({
   selector: 'ap-json-viewer',
@@ -19,54 +13,70 @@ import { Observable } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JsonViewComponent {
-  readonly jsonEditorOptionsMonaco = jsonEditorOptionsMonaco;
-  jsonFormController = new FormControl('');
+  jsonFormController = new FormControl({});
   _content = '';
-  containerWidthChange$?: Observable<number>;
-  readonly containerMaxHeight = 600;
-  readonly containerMinHeight = 100;
+  contentIsAnObject = false;
+  contentType:
+    | 'object'
+    | 'string'
+    | 'number'
+    | 'boolean'
+    | 'bigint'
+    | 'symbol'
+    | 'function'
+    | 'undefined' = 'string';
   containerHeight = 0;
+  @Input() hideTitle = false;
   @Input() hideMaximize = false;
-  @Input() title: string;
+  @Input() viewTitle: string;
+  jsonEditorOptions: JsonEditorOptions = new JsonEditorOptions();
   @Input() set content(value: unknown) {
-    const formattedOutput = outputLog(value, false);
-    if (formattedOutput !== this._content) {
-      this._content = formattedOutput;
-      this.jsonFormController.setValue(this._content || '');
-      if (this.editor) {
-        setTimeout(() => {
-          this.resizeEditorToContent(this.editor);
-        });
+    this.contentType = typeof value;
+    if (this.contentType === 'object') {
+      this._content = JSON.stringify(value, null, 2);
+      this.jsonFormController.setValue(JSON.parse(this._content));
+    } else {
+      if (typeof value === 'string' && this.isStringValidJson(value)) {
+        this._content = JSON.stringify(JSON.parse(value), null, 2);
+      } else {
+        this._content = JSON.stringify(value);
       }
     }
+    this.setExpandAllNodesInEditor();
   }
   editor?: unknown;
-  constructor(
-    private dialogService: MatDialog,
-    private snackbar: MatSnackBar,
-    private cd: ChangeDetectorRef
-  ) {}
+  constructor(private dialogService: MatDialog, private snackbar: MatSnackBar) {
+    this.jsonEditorOptions.mode = 'view';
+  }
+
+  private setExpandAllNodesInEditor() {
+    const contentSize = (this._content.length * 2) / 1024;
+    this.jsonEditorOptions.expandAll = contentSize < 400;
+  }
 
   openModal() {
     this.dialogService.open(JsonViewDialogComponent, {
-      data: { title: this.title, content: this._content },
+      data: { title: this.viewTitle, content: this._content },
     });
   }
   copyContent() {
     copyText(this._content);
-    this.snackbar.open(`${this.title} copied`);
+    this.snackbar.open(`${this.viewTitle} copied`);
   }
 
   downloadContent() {
-    downloadJson(this._content, this.title);
-  }
-  resizeEditorToContent(editor: any) {
-    this.editor = editor;
-    const contentHeight = editor.getContentHeight();
-    this.containerHeight = Math.max(
-      Math.min(contentHeight, this.containerMaxHeight),
-      this.containerMinHeight
+    downloadFile(
+      this._content,
+      this.viewTitle,
+      this.contentIsAnObject ? 'txt' : 'json'
     );
-    this.cd.markForCheck();
+  }
+  private isStringValidJson(str: string) {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
   }
 }
